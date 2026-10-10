@@ -33,6 +33,8 @@ This project demonstrates real-world authentication security practices including
 | Session Handling | Secure user sessions |
 | OTP Verification | Two-Factor Authentication |
 | Input Validation | Prevent invalid data |
+| Rate Limiting | Blocks brute-force login attempts |
+| Account Lockout | Locks an IP/email after repeated failures |
 
 ---
 
@@ -57,8 +59,11 @@ secure-login-system/
 │
 ├── app.py
 ├── requirements.txt
-├── .env
-├── database.db
+├── .gitignore
+├── .env              (you create this; never committed)
+│
+├── instance/
+│   └── database.db   (auto-created on first run)
 │
 ├── templates/
 │   ├── index.html
@@ -94,12 +99,6 @@ cd Secure-login-system
 ## 3️⃣ Install Dependencies
 
 ```bash
-pip install flask flask_sqlalchemy flask_bcrypt flask_wtf email-validator pyotp python-dotenv
-```
-
-OR
-
-```bash
 pip install -r requirements.txt
 ```
 
@@ -112,9 +111,24 @@ Create a `.env` file in the project root folder.
 Add:
 
 ```env
-SECRET_KEY=supersecretkey123
+SECRET_KEY=replace_with_a_long_random_string
 EMAIL_ADDRESS=yourgmail@gmail.com
 EMAIL_PASSWORD=yourapppassword
+```
+
+Optional:
+
+```env
+FLASK_DEBUG=1        # set to 1 only for local development
+FLASK_HOST=127.0.0.1
+FLASK_PORT=5000
+SESSION_COOKIE_SECURE=1   # set to 1 when serving over HTTPS
+```
+
+⚠ `.env` is listed in `.gitignore` and must **never** be committed. Generate a strong `SECRET_KEY` with:
+
+```bash
+python -c "import secrets; print(secrets.token_hex(32))"
 ```
 
 ---
@@ -134,6 +148,13 @@ Generate App Password and paste it inside `.env`.
 # ▶ Run Project
 
 ```bash
+python app.py
+```
+
+Enable debug mode locally (never in production):
+
+```bash
+set FLASK_DEBUG=1     # Windows
 python app.py
 ```
 
@@ -195,13 +216,13 @@ Suraj@123
 # 📦 requirements.txt
 
 ```txt
-Flask
-Flask-SQLAlchemy
-Flask-Bcrypt
-Flask-WTF
-email-validator
-pyotp
-python-dotenv
+Flask>=3.1.0,<4
+Flask-SQLAlchemy>=3.1.1,<4
+Flask-Bcrypt>=1.0.1,<2
+Flask-WTF>=1.2.2,<2
+email-validator>=2.3.0,<3
+pyotp>=2.9.0,<3
+python-dotenv>=1.0.1,<2
 ```
 
 ---
@@ -235,15 +256,14 @@ python-dotenv
 
 # 🚀 Future Improvements
 
-✅ Password Reset Feature  
-✅ Google OAuth Login  
-✅ JWT Authentication  
-✅ PostgreSQL Database  
-✅ Docker Deployment  
-✅ HTTPS SSL Security  
-✅ Admin Panel  
-✅ Rate Limiting  
-✅ Account Lockout Protection  
+➕ Password Reset Feature  
+➕ Google OAuth Login  
+➕ JWT Authentication  
+➕ PostgreSQL Database  
+➕ Docker Deployment  
+➕ HTTPS SSL Security  
+➕ Admin Panel  
+➕ Persistent rate limiting (Redis/DB instead of in-memory)
 
 ---
 
